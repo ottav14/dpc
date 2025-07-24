@@ -1,0 +1,24 @@
+:root {
+	--background: #000;
+	--highlight: #ffffff21;
+	--text: #fff;
+	--button-size: 5rem;
+}
+
+* {
+	margin: 0;	
+	font-family: "Nunito", sans-serif;
+	font-weight: bold;
+}
+
+body {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	height: 100vh;
+}
+
+#canvas {
+	border-radius: 4px;
+	box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
+}
