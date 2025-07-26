@@ -38,11 +38,13 @@ class DoublePendulum {
 		this.p2.acc = newAcc2;
 
 		this.p1.vel += this.p1.acc;
+		this.p1.vel = Math.min(PARAMS.maxVel, this.p1.vel);
 		this.p1.t += this.p1.vel;
 
 		this.p2.x = this.p1.x + this.l1 * Math.sin(this.p1.t+Math.PI);
 		this.p2.y = this.p1.y - this.l1 * Math.cos(this.p1.t+Math.PI);
 		this.p2.vel += this.p2.acc;
+		this.p2.vel = Math.min(PARAMS.maxVel, this.p2.vel);
 		this.p2.t += this.p2.vel;
 
 	}

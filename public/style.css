@@ -13,12 +13,24 @@
 
 body {
 	display: flex;
-	justify-content: space-around;
+	flex-direction: column;
+	justify-content: center;
 	align-items: center;
 	height: 100vh;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 #canvas {
 	border-radius: 4px;
 	box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+#ui {
+	display: flex;
 }

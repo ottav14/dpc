@@ -13,14 +13,8 @@ class Pendulum {
 		this.w = UTIL.getWidth(m);
 		this.h = UTIL.getHeight(m);
 		this.r = UTIL.getRadius(m);
-		this.color = PARAMS.currentDPCount * 10;
+		this.color = 10*PARAMS.currentDPCount % 255;
 		PARAMS.incrementDPCount();
-	}
-
-	update() {
-		this.acc = -PARAMS.g / this.h * Math.sin(this.t);		
-		this.vel += this.acc;
-		this.t += this.vel;
 	}
 
 	display(ctx) {
@@ -30,7 +24,7 @@ class Pendulum {
 		ctx.rotate(this.t);
 		
 		const [r, g, b] = UTIL.hue(this.color);
-		ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 1)`;
+		ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.7)`;
 		ctx.fillRect(-0.5*this.w, 0, this.w, this.h);
 
 		ctx.beginPath();

@@ -5,14 +5,30 @@ import DoublePendulum from './DoublePendulum.js';
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d'); 
-const dps = [];
-const dpCount = 10;
+let dps = [];
 const timestep = 0.001;
 let time = 0;
+const names = [
+	'count',
+	'blur',
+	'theta1',
+	'theta2',
+	'mass1',
+	'mass2'
+];
+
+const state = {
+	count: 2,
+	blur: 0,
+	theta1: 0.5 * Math.PI,
+	theta2: 0,
+	mass1: 10,
+	mass2: 10
+}
+
 
 const clearCanvas = () => {
-	const [r, g, b] = UTIL.hue(255*UTIL.triangleWave(time));
-	ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.2)`;
+	ctx.fillStyle = `rgba(255, 255, 255, ${1-state.blur/100})`;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
@@ -23,10 +39,35 @@ const createRandomDP = () => {
 	dps.push(new DoublePendulum(0.5*canvas.width, 200, t1, m, t2, m));
 }
 
-for(let i=0; i<dpCount; i++) {
-	dps.push(new DoublePendulum(0.5*canvas.width, 200, 0.5*Math.PI+0.01*i, 10-0.3*i, -0.5*Math.PI, 10-0.3*i));
+const updateInitialConditions = () => {
+	for(const name of names) {
+		const control = document.getElementById(name);
+		state[name] = parseInt(control.value); 
+	}
+	init();
 }
 
+const initControls = () => {
+
+	for(const name of names) {
+		const control = document.getElementById(name);
+		control.addEventListener('input', updateInitialConditions);
+		control.value = state[name];
+		console.log(name, control.value);
+	}
+}
+initControls();
+
+const init = () => {
+
+	clearCanvas();
+	dps = [];
+	for(let i=0; i<state.count; i++) {
+		dps.push(new DoublePendulum(0.5*canvas.width, 200, state.theta1-0.05*i, state.mass1, state.theta2, state.mass2));
+	}
+
+}
+document.addEventListener('DOMContentLoaded', updateInitialConditions);
 
 function update() {
 
@@ -40,4 +81,5 @@ function update() {
   requestAnimationFrame(update);
 }
 requestAnimationFrame(update);
+
 

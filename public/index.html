@@ -14,7 +14,77 @@
 		<title>DPC</title>
 	</head>
 	<body>
-		<canvas id="canvas" width="1024" height="720"></canvas>
+		<main>
+			<canvas id="canvas" width="1024" height="720"></canvas>
+			<div id="ui">
+				<div class="container mt-4" style="max-width: 150px;">
+					<label for="count" class="form-label">Count</label>
+					<input
+							type="number"
+							class="form-control"
+							id="count"
+							placeholder="2"
+							min="0"
+							max="99"
+							>
+				</div>
+				<div class="container mt-4" style="max-width: 150px;">
+					<label for="blur" class="form-label">Blur</label>
+					<input
+							type="number"
+							class="form-control"
+							id="blur"
+							placeholder="00"
+							min="0"
+							max="99"
+							>
+				</div>
+				<div class="container mt-4" style="max-width: 150px;">
+					<label for="theta1" class="form-label">Theta 1</label>
+					<input
+							type="number"
+							class="form-control"
+							id="theta1"
+							placeholder="2"
+							min="0"
+							max="7"
+							>
+				</div>
+				<div class="container mt-4" style="max-width: 150px;">
+					<label for="mass1" class="form-label">Mass 1</label>
+					<input
+							type="number"
+							class="form-control"
+							id="mass1"
+							placeholder="10"
+							min="3"
+							max="20"
+							>
+				</div>
+				<div class="container mt-4" style="max-width: 150px;">
+					<label for="theta2" class="form-label">Theta 2</label>
+					<input
+							type="number"
+							class="form-control"
+							id="theta2"
+							placeholder="2"
+							min="0"
+							max="7"
+							>
+				</div>
+				<div class="container mt-4" style="max-width: 150px;">
+					<label for="mass2" class="form-label">Mass 2</label>
+					<input
+							type="number"
+							class="form-control"
+							id="mass2"
+							placeholder="10"
+							min="3"
+							max="20"
+							>
+				</div>
+			</div>
+		</main>
 	</body>
 </html>
 
