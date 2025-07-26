@@ -2,6 +2,7 @@ import * as PARAMS from './params.js';
 import * as UTIL from './util.js';
 import Pendulum from './Pendulum.js';
 import DoublePendulum from './DoublePendulum.js';
+import initFractalDisplay from './FractalDisplay.js';
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d'); 
@@ -25,7 +26,6 @@ const state = {
 	mass1: 10,
 	mass2: 10
 }
-
 
 const clearCanvas = () => {
 	ctx.fillStyle = `rgba(255, 255, 255, ${1-state.blur/100})`;
@@ -53,7 +53,6 @@ const initControls = () => {
 		const control = document.getElementById(name);
 		control.addEventListener('input', updateInitialConditions);
 		control.value = state[name];
-		console.log(name, control.value);
 	}
 }
 initControls();
@@ -81,5 +80,4 @@ function update() {
   requestAnimationFrame(update);
 }
 requestAnimationFrame(update);
-
 
