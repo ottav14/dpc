@@ -4,7 +4,7 @@ import * as UTIL from './util.js';
 
 class DoublePendulum {
 
-	constructor(x, y, t1, m1, t2, m2) {
+	constructor(x, y, t1, m1, t2, m2, first) {
 		
 		this.l1 = UTIL.getHeight(m1);
 		this.l2 = UTIL.getHeight(m2);
@@ -12,8 +12,8 @@ class DoublePendulum {
 		const x2 = x + this.l1 * Math.cos(t1);
 		const y2 = y + this.l1 * Math.sin(t1);
 
-		this.p1 = new Pendulum(x, y, t1, m1);
-		this.p2 = new Pendulum(x2, y2, t2, m2);
+		this.p1 = new Pendulum(x, y, t1, m1, first);
+		this.p2 = new Pendulum(x2, y2, t2, m2, first);
 
 	}
 
@@ -40,19 +40,27 @@ class DoublePendulum {
 		this.p1.vel += this.p1.acc;
 		this.p1.vel = Math.min(PARAMS.maxVel, this.p1.vel);
 		this.p1.t += this.p1.vel;
+		if(this.p1.t > 2*Math.PI)
+			this.p1.t -= 2*Math.PI;
+		else if(this.p1.t < -2*Math.PI)
+			this.p1.t += 2*Math.PI;
 
 		this.p2.x = this.p1.x + this.l1 * Math.sin(this.p1.t+Math.PI);
 		this.p2.y = this.p1.y - this.l1 * Math.cos(this.p1.t+Math.PI);
 		this.p2.vel += this.p2.acc;
 		this.p2.vel = Math.min(PARAMS.maxVel, this.p2.vel);
 		this.p2.t += this.p2.vel;
+		if(this.p2.t > 2*Math.PI)
+			this.p2.t -= 2*Math.PI;
+		else if(this.p2.t < -2*Math.PI)
+			this.p2.t += 2*Math.PI;
 
 	}
 
-	display(ctx) {
+	display(ctx, angleDisplay) {
 		
-		this.p2.display(ctx);
-		this.p1.display(ctx);
+		this.p2.display(ctx, angleDisplay);
+		this.p1.display(ctx, angleDisplay);
 
 	}
 

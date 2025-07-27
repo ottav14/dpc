@@ -33,4 +33,25 @@ main {
 
 #ui {
 	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	width: 1024px;
+}
+
+.big-checkbox {
+	transform: scale(1.5);
+}
+
+.checkbox-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 24px;
+	height: 60px;
+	margin-right: 1rem;
+}
+
+.hidden {
+	display: none;
 }
