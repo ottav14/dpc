@@ -1,8 +1,5 @@
 import * as PARAMS from './params.js';
 
-export const getWidth = (m) => m;
-export const getHeight = (m) => 20*m;
-export const getRadius = (m) => 3*m;
 export const mod = (n, m) => ((n % m) + m) % m;
 
 export const hue = (h, s = 1, l = 0.5) => {

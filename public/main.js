@@ -27,6 +27,9 @@ const state = {
 	theta2: 0,
 	mass1: 10,
 	mass2: 10,
+	length: 200,
+	width: 10,
+	radius: 30,
 	stacked: false,
 	angleDisplay: false
 }
@@ -34,13 +37,6 @@ const state = {
 const clearCanvas = () => {
 	ctx.fillStyle = `rgba(255, 255, 255, ${1-state.blur/100})`;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-}
-
-const createRandomDP = () => {
-	const m = 10;
-	const t1 = Math.random()*2*Math.PI; 
-	const t2 = Math.random()*2*Math.PI; 
-	dps.push(new DoublePendulum(0.5*canvas.width, 200, t1, m, t2, m));
 }
 
 const updateInitialConditions = () => {
@@ -66,8 +62,11 @@ const updateInitialConditions = () => {
 			state[name] = parseInt(control.value); 
 		}
 	}
-	console.log(state.angleDisplay);
 	init();
+}
+
+const updateAngleDisplay = () => {
+	state.angleDisplay = document.getElementById('angleDisplay').checked;
 }
 
 const initControls = () => {
@@ -77,6 +76,9 @@ const initControls = () => {
 		control.addEventListener('input', updateInitialConditions);
 		control.value = state[name];
 	}
+	const angleDisplayControl = document.getElementById('angleDisplay');
+	angleDisplayControl.removeEventListener('input', updateInitialConditions);
+	angleDisplayControl.addEventListener('input', updateAngleDisplay);
 }
 initControls();
 
@@ -84,13 +86,14 @@ const init = () => {
 
 	clearCanvas();
 	dps = [];
+	PARAMS.setDPCount(0);
 
 	const x0 = state.stacked ? 0.5*canvas.width : canvas.width/(state.count+1); 
 	const y = 200;
-	dps.push(new DoublePendulum(x0, y, state.theta1, state.mass1, state.theta2, state.mass2, true));
+	dps.push(new DoublePendulum(x0, y, state.theta1, state.mass1, state.theta2, state.mass2, state.length, state.width, state.radius, true));
 	for(let i=1; i<state.count; i++) {
 		const x = state.stacked ? 0.5*canvas.width : (i+1)*canvas.width/(state.count+1);
-		dps.push(new DoublePendulum(x, y, state.theta1-0.05*i, state.mass1, state.theta2, state.mass2, false));
+		dps.push(new DoublePendulum(x, y, state.theta1-0.05*i, state.mass1, state.theta2, state.mass2, state.length, state.width, state.radius, false));
 	}
 
 }
