@@ -34,7 +34,7 @@ const compileShader = (gl, type, source) => {
 	return shader;
 }
 
-const initFractalDisplay = async (gl) => {
+const initFractalDisplay = async (canvas, gl) => {
 
 	const program = await initShaders(gl);
 	gl.useProgram(program);

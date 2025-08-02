@@ -43,6 +43,21 @@ main {
 	transform: scale(1.5);
 }
 
+#canvas-container {
+	display: flex;
+	width: 1024px;
+	height: 720px;
+}
+
+#hidden-canvas-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.square {
+	flex: 1;
+}
+
 .checkbox-container {
 	display: flex;
 	flex-direction: column;
@@ -55,4 +70,9 @@ main {
 
 .hidden {
 	display: none;
+}
+
+.vertical {
+	display: flex;
+	flex-direction: column;
 }
