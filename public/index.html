@@ -16,6 +16,16 @@
 	<body>
 		<main>
 			<div id="ui">
+				<div id="mode-container">
+					<label class="form-select-label" for="mode-select">
+						Mode
+					</label>
+					<select id="mode-select" class="form-select">
+						<option value="dps">Pendulum</option>
+						<option value="curves">Curves</option>
+						<option value="fractal">Fractal</option>
+					</select>
+				</div>
 				<div id="count-container" class="container mt-4" style="max-width: 150px;">
 					<label for="count" class="form-label">Count</label>
 					<input
@@ -23,8 +33,6 @@
 							class="form-control"
 							id="count"
 							placeholder="2"
-							min="0"
-							max="99"
 					>
 				</div>
 				<div id="blur-container" class="container mt-4" style="max-width: 150px;">
@@ -34,8 +42,6 @@
 							class="form-control"
 							id="blur"
 							placeholder="00"
-							min="0"
-							max="99"
 					>
 				</div>
 				<div id="theta1-container" class="container mt-4" style="max-width: 150px;">
@@ -45,8 +51,6 @@
 							class="form-control"
 							id="theta1"
 							placeholder="2"
-							min="0"
-							max="7"
 					>
 				</div>
 				<div id="mass1-container" class="container mt-4" style="max-width: 150px;">
@@ -56,8 +60,15 @@
 							class="form-control"
 							id="mass1"
 							placeholder="10"
-							min="1"
-							max="99"
+					>
+				</div>
+				<div id="length1-container" class="container mt-4" style="max-width: 150px;">
+					<label for="length1" class="form-label">Length 1</label>
+					<input
+							type="number"
+							class="form-control"
+							id="length1"
+							placeholder="10"
 					>
 				</div>
 				<div id="theta2-container" class="container mt-4" style="max-width: 150px;">
@@ -67,8 +78,6 @@
 							class="form-control"
 							id="theta2"
 							placeholder="2"
-							min="0"
-							max="7"
 					>
 				</div>
 				<div id="mass2-container" class="container mt-4" style="max-width: 150px;">
@@ -78,8 +87,15 @@
 							class="form-control"
 							id="mass2"
 							placeholder="10"
-							min="1"
-							max="99"
+					>
+				</div>
+				<div id="length2-container" class="container mt-4" style="max-width: 150px;">
+					<label for="length2" class="form-label">Length 2</label>
+					<input
+							type="number"
+							class="form-control"
+							id="length2"
+							placeholder="10"
 					>
 				</div>
 				<div id="stacked-container" class="checkbox-container">
@@ -93,16 +109,6 @@
 						Angles
 					</label>
 					<input class="form-check-input big-checkbox" type="checkbox" value="" id="angleDisplay">
-				</div>
-				<div id="mode-container">
-					<label class="form-select-label" for="mode-select">
-						Mode
-					</label>
-					<select id="mode-select" class="form-select">
-						<option value="dps">Pendulum</option>
-						<option value="curves">Curves</option>
-						<option value="fractal">Fractal</option>
-					</select>
 				</div>
 			</div>
 			<div id="canvas-container">

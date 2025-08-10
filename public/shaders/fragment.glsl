@@ -1,4 +1,5 @@
-#define ITERATIONS 30
+#define ITERATIONS 5
+#define TIMESTEP 0.09
 #define G 1.0
 
 precision mediump float;
@@ -8,7 +9,9 @@ uniform vec2 uPosition;
 uniform float uZoom;
 uniform float uTime;
 uniform float uM0;
+uniform float uL0;
 uniform float uM1;
+uniform float uL1;
 
 vec3 hue(float h) {
 	h = fract(h) * 6.0;
@@ -47,10 +50,10 @@ vec4 evalDP(vec4 p) {
 
 	float t0 = p.x;
 	float v0 = p.y;
-	float l0 = 1.0;
+	float l0 = uL0;
 	float t1 = p.z;
 	float v1 = p.w;
-	float l1 = 1.0;
+	float l1 = uL1;
 	float div = 2.0 * uM0 + uM1 - uM1 * cos(2.0 * t0 - 2.0 * t1);
 	float diff = t0-t1;
 
@@ -75,9 +78,9 @@ vec4 evalDP(vec4 p) {
 	return vec4(t0, v0, t1, v1);
 }
 
-float integrateDP(vec4 p) {
+float rkIntegrate(vec4 p) {
 	vec4 y = p;
-	const float h = 0.05;
+	const float h = TIMESTEP;
 	float maxSpeed = 0.0;
 	for(int t = 0; t < ITERATIONS; t++) {
 		vec4 k1 = evalDP(y);
@@ -95,10 +98,20 @@ float integrateDP(vec4 p) {
 	return maxSpeed;
 }
 
+float symplecticIntegrate(vec4 p) {
+	float maxSpeed = 0.0;
+	for(int i=0; i<ITERATIONS; i++) {
+		p = evalDP(p);
+		float speed = length(vec2(p.y, p.w));
+		if(speed > maxSpeed)
+			maxSpeed = speed;
+	}
+	return maxSpeed;
+}
+
 float dpFractal(vec2 p) {
 
-	float res = integrateDP(vec4(p.x, sin(uTime), p.y, cos(uTime)));
-		
+	float res = symplecticIntegrate(vec4(p.x, sin(uTime), p.y, cos(uTime)));
 
 	return res;
 

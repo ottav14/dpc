@@ -4,16 +4,16 @@ import * as UTIL from './util.js';
 
 class DoublePendulum {
 
-	constructor(x, y, t1, m1, t2, m2, l, w, r, first) {
+	constructor(x, y, t1, m1, l1, t2, m2, l2, w, r, first) {
 		
-		this.l1 = l;
-		this.l2 = l;
+		this.l1 = l1;
+		this.l2 = l2;
 
-		const x2 = x + this.l * Math.cos(t1);
-		const y2 = y + this.l * Math.sin(t1);
+		const x2 = x + this.l1 * Math.cos(t1);
+		const y2 = y + this.l2 * Math.sin(t1);
 
-		this.p1 = new Pendulum(x, y, t1, m1, l, w, r, first);
-		this.p2 = new Pendulum(x2, y2, t2, m2, l, w, r, first);
+		this.p1 = new Pendulum(x, y, t1, m1, l1, w, r, first);
+		this.p2 = new Pendulum(x2, y2, t2, m2, l2, w, r, first);
 
 	}
 

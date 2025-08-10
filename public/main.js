@@ -22,6 +22,8 @@ const names = [
 	'theta2',
 	'mass1',
 	'mass2',
+	'length1',
+	'length2',
 	'stacked',
 	'angleDisplay',
 ];
@@ -33,7 +35,9 @@ const fractalUniforms = [
 	{ name: 'Zoom',     value: 20,         size: 1 },
 	{ name: 'Time',     value: 0,          size: 1 },
 	{ name: 'M0',       value: 1,          size: 1 },
-	{ name: 'M1',       value: 1,          size: 1 } 
+	{ name: 'L0',       value: 1,          size: 1 },
+	{ name: 'M1',       value: 1,          size: 1 },
+	{ name: 'L1',       value: 1,          size: 1 },
 ];
 
 let desiredFractalPosition = [0.0, 0.0];
@@ -46,7 +50,8 @@ const state = {
 	theta2: 0,
 	mass1: 10,
 	mass2: 10,
-	length: 200,
+	length1: 200,
+	length2: 200,
 	width: 10,
 	radius: 30,
 	stacked: false,
@@ -84,7 +89,9 @@ const updateInitialConditions = () => {
 			state[name] = parseInt(control.value); 
 	}
 	fractalUniforms[3].value = document.getElementById('mass1').value;
-	fractalUniforms[4].value = document.getElementById('mass2').value;
+	fractalUniforms[4].value = document.getElementById('length1').value;
+	fractalUniforms[5].value = document.getElementById('mass2').value;
+	fractalUniforms[6].value = document.getElementById('length2').value;
 
 	updateCanvases();
 	updateFractalUniforms();
@@ -136,7 +143,7 @@ const toggleStacked = () => {
 	const stackedControl = document.getElementById('stacked');
 	state['stacked'] = stackedControl.checked; 
 
-	const angleDisplayContainer = document.getElementById('angleDisplayContainer');
+	const angleDisplayContainer = document.getElementById('angleDisplay-container');
 	const angleDisplay = document.getElementById('angleDisplay');
 	if(stackedControl.checked) {
 		angleDisplayContainer.classList.add('hidden');
@@ -184,12 +191,16 @@ const handleModeChange = () => {
 	switch(mode) {
 		case 'dps':
 			unhideAllControls();
+			document.getElementById('length1').value = 200;
+			document.getElementById('length2').value = 200;
 			break;
 		case 'curves':
 			unhideAllControls();
 			hideControl('blur');
 			hideControl('stacked');
 			hideControl('angleDisplay');
+			document.getElementById('length1').value = 200;
+			document.getElementById('length2').value = 200;
 			break;
 		case 'fractal':
 			unhideAllControls();
@@ -199,8 +210,11 @@ const handleModeChange = () => {
 			hideControl('theta2');
 			hideControl('stacked');
 			hideControl('angleDisplay');
+			document.getElementById('length1').value = 1;
+			document.getElementById('length2').value = 1;
 			break;
 	}
+	updateInitialConditions();
 
 }
 
@@ -298,10 +312,10 @@ const init = () => {
 
 	const x0 = state.stacked ? 0.5*pendulumCanvas.width : pendulumCanvas.width/(state.count+1); 
 	const y = 200;
-	dps.push(new DoublePendulum(x0, y, state.theta1, state.mass1, state.theta2, state.mass2, state.length, state.width, state.radius, true));
+	dps.push(new DoublePendulum(x0, y, state.theta1, state.mass1, state.length1, state.theta2, state.mass2, state.length2, state.width, state.radius, true));
 	for(let i=1; i<state.count; i++) {
 		const x = state.stacked ? 0.5*pendulumCanvas.width : (i+1)*pendulumCanvas.width/(state.count+1);
-		dps.push(new DoublePendulum(x, y, state.theta1-0.05*i, state.mass1, state.theta2, state.mass2, state.length, state.width, state.radius, false));
+		dps.push(new DoublePendulum(x, y, state.theta1-0.05*i, state.mass1, state.length1, state.theta2, state.mass2, state.length2, state.width, state.radius, false));
 	}
 
 }
