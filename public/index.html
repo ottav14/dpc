@@ -16,7 +16,7 @@
 	<body>
 		<main>
 			<div id="ui">
-				<div class="container mt-4" style="max-width: 150px;">
+				<div id="count-container" class="container mt-4" style="max-width: 150px;">
 					<label for="count" class="form-label">Count</label>
 					<input
 							type="number"
@@ -27,7 +27,7 @@
 							max="99"
 					>
 				</div>
-				<div class="container mt-4" style="max-width: 150px;">
+				<div id="blur-container" class="container mt-4" style="max-width: 150px;">
 					<label for="blur" class="form-label">Blur</label>
 					<input
 							type="number"
@@ -38,7 +38,7 @@
 							max="99"
 					>
 				</div>
-				<div class="container mt-4" style="max-width: 150px;">
+				<div id="theta1-container" class="container mt-4" style="max-width: 150px;">
 					<label for="theta1" class="form-label">Theta 1</label>
 					<input
 							type="number"
@@ -49,18 +49,18 @@
 							max="7"
 					>
 				</div>
-				<div class="container mt-4" style="max-width: 150px;">
+				<div id="mass1-container" class="container mt-4" style="max-width: 150px;">
 					<label for="mass1" class="form-label">Mass 1</label>
 					<input
 							type="number"
 							class="form-control"
 							id="mass1"
 							placeholder="10"
-							min="3"
-							max="20"
+							min="1"
+							max="99"
 					>
 				</div>
-				<div class="container mt-4" style="max-width: 150px;">
+				<div id="theta2-container" class="container mt-4" style="max-width: 150px;">
 					<label for="theta2" class="form-label">Theta 2</label>
 					<input
 							type="number"
@@ -71,54 +71,46 @@
 							max="7"
 					>
 				</div>
-				<div class="container mt-4" style="max-width: 150px;">
+				<div id="mass2-container" class="container mt-4" style="max-width: 150px;">
 					<label for="mass2" class="form-label">Mass 2</label>
 					<input
 							type="number"
 							class="form-control"
 							id="mass2"
 							placeholder="10"
-							min="3"
-							max="20"
+							min="1"
+							max="99"
 					>
 				</div>
-				<div class="checkbox-container">
+				<div id="stacked-container" class="checkbox-container">
 					<label class="form-check-label" for="stacked">
 						Stacked
 					</label>
 					<input class="form-check-input big-checkbox" type="checkbox" value="" id="stacked">
 				</div>
-				<div class="checkbox-container" id="angleDisplayContainer">
+				<div id="angleDisplay-container" class="checkbox-container" id="angleDisplayContainer">
 					<label class="form-check-label" for="angleDisplay">
 						Angles
 					</label>
 					<input class="form-check-input big-checkbox" type="checkbox" value="" id="angleDisplay">
 				</div>
-				<div class="checkbox-container">
-					<label class="form-check-label" for="curves">
-						Curves	
+				<div id="mode-container">
+					<label class="form-select-label" for="mode-select">
+						Mode
 					</label>
-					<input class="form-check-input big-checkbox" type="checkbox" value="" id="curves">
-				</div>
-				<div class="checkbox-container">
-					<label class="form-check-label" for="fractal">
-						Fractal
-					</label>
-					<input class="form-check-input big-checkbox" type="checkbox" value="" id="fractal">
-				</div>
-				<div class="checkbox-container">
-					<label class="form-check-label" for="dps">
-						Pendulums					
-					</label>
-					<input class="form-check-input big-checkbox" type="checkbox" value="" id="dps">
+					<select id="mode-select" class="form-select">
+						<option value="dps">Pendulum</option>
+						<option value="curves">Curves</option>
+						<option value="fractal">Fractal</option>
+					</select>
 				</div>
 			</div>
 			<div id="canvas-container">
 				<div id="hidden-canvas-container">
-					<canvas class="canvas hidden square" id="fractal-canvas" width="512" height="720"></canvas>
-					<canvas class="canvas hidden square" id="curves-canvas" width="512" height="720"></canvas>
+					<canvas class="canvas hidden square" id="fractal-canvas" width="1024" height="720"></canvas>
+					<canvas class="canvas hidden square" id="curves-canvas" width="1024" height="720"></canvas>
 				</div>
-				<canvas class="canvas" id="main-canvas" width="1024" height="720"></canvas>
+				<canvas class="canvas" id="dps-canvas" width="1024" height="720"></canvas>
 			</div>
 		</main>
 	</body>

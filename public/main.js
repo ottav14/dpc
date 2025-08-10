@@ -5,12 +5,15 @@ import Pendulum from './Pendulum.js';
 import DoublePendulum from './DoublePendulum.js';
 import initFractalDisplay from './FractalDisplay.js';
 
-const pendulumCanvas = document.getElementById('main-canvas');
+const pendulumCanvas = document.getElementById('dps-canvas');
 const fractalCanvas = document.getElementById('fractal-canvas');
 const gl = fractalCanvas.getContext('webgl');
 const ctx = pendulumCanvas.getContext('2d'); 
 let dps = [];
 const timestep = 0.001;
+const fractalMoveSpeed= 0.015;
+const fractalZoomSpeed= 1.05;
+const fractalSmoothing = 0.05;
 let time = 0;
 const names = [
 	'count',
@@ -21,10 +24,20 @@ const names = [
 	'mass2',
 	'stacked',
 	'angleDisplay',
-	'curves',
-	'fractal',
-	'dps'
 ];
+
+let keysHeld = [];
+
+const fractalUniforms = [
+	{ name: 'Position', value: [0.0, 0.0], size: 2 },
+	{ name: 'Zoom',     value: 20,         size: 1 },
+	{ name: 'Time',     value: 0,          size: 1 },
+	{ name: 'M0',       value: 1,          size: 1 },
+	{ name: 'M1',       value: 1,          size: 1 } 
+];
+
+let desiredFractalPosition = [0.0, 0.0];
+let desiredFractalZoom = 20;
 
 const state = {
 	count: 2,
@@ -38,10 +51,10 @@ const state = {
 	radius: 30,
 	stacked: false,
 	angleDisplay: false,
-	curves: false,
-	fractal: false,
-	dps: true
 }
+
+const modes = ['dps', 'curves', 'fractal'];
+let mode = 'dps';
 
 const clearCanvas = (ctx) => {
 	ctx.fillStyle = `rgba(255, 255, 255, ${1-state.blur/100})`;
@@ -53,6 +66,15 @@ const setCanvasSize = (w, h, c) => {
 	c.height = h;
 }
 
+const selectCanvas = (mode) => {
+	for(const m of modes) {
+		const current = document.getElementById(`${m}-canvas`);
+		current.classList.add('hidden');
+	}
+
+	document.getElementById(`${mode}-canvas`).classList.remove('hidden');
+}
+
 const updateInitialConditions = () => {
 	for(const name of names) {
 		const control = document.getElementById(name);
@@ -61,7 +83,11 @@ const updateInitialConditions = () => {
 		else
 			state[name] = parseInt(control.value); 
 	}
+	fractalUniforms[3].value = document.getElementById('mass1').value;
+	fractalUniforms[4].value = document.getElementById('mass2').value;
+
 	updateCanvases();
+	updateFractalUniforms();
 	init();
 }
 
@@ -87,7 +113,6 @@ const updateCanvases = () => {
 		case 2:
 			setCanvasSize(512, 720, active[0]);
 			setCanvasSize(512, 720, active[1]);
-			console.log('poop');
 			break;
 		case 3:
 			setCanvasSize(512, 720, pendulumCanvas);
@@ -124,51 +149,6 @@ const toggleStacked = () => {
 	setPivotPoints();
 }
 
-const toggleCurves = () => {
-	state.curves = document.getElementById('curves').checked;
-	const curvesCanvas = document.getElementById('curves-canvas');
-	const curvesCtx = curvesCanvas.getContext('2d');
-
-	if(state.curves) {
-		curvesCanvas.classList.remove('hidden');
-		pendulumCanvas.width = 512;
-	}
-	else {
-		curvesCanvas.classList.add('hidden');
-		pendulumCanvas.width = 1024;
-	}
-	setPivotPoints();
-	clearCanvas(curvesCtx);
-	updateCanvases
-}
-
-const toggleFractal = () => {
-	state.fractal = document.getElementById('fractal').checked;
-
-	if(state.fractal) {
-		fractalCanvas.classList.remove('hidden');
-	}
-	else {
-		fractalCanvas.classList.add('hidden');
-	}
-	setPivotPoints();
-	updateCanvases();
-}
-
-const toggleDps = () => {
-	state.dps = document.getElementById('dps').checked;
-
-	if(state.dps) {
-		pendulumCanvas.classList.remove('hidden');
-	}
-	else {
-		pendulumCanvas.classList.add('hidden');
-	}
-	setPivotPoints();
-	clearCanvas(ctx);
-	updateCanvases();
-}
-
 const updateCurves = () => {
 	const curvesCanvas = document.getElementById('curves-canvas');
 	const curvesCtx = curvesCanvas.getContext('2d');
@@ -186,6 +166,104 @@ const updateCurves = () => {
 	
 }
 
+const hideControl = (name) => {
+	document.getElementById(`${name}-container`).classList.add('hidden');
+}
+
+const unhideAllControls = () => {
+	for(const name of names) {
+		document.getElementById(`${name}-container`).classList.remove('hidden');
+	}
+}
+
+const handleModeChange = () => {
+
+	const modeControl = document.getElementById('mode-select');
+	mode = modeControl.value;
+	selectCanvas(mode);
+	switch(mode) {
+		case 'dps':
+			unhideAllControls();
+			break;
+		case 'curves':
+			unhideAllControls();
+			hideControl('blur');
+			hideControl('stacked');
+			hideControl('angleDisplay');
+			break;
+		case 'fractal':
+			unhideAllControls();
+			hideControl('count');
+			hideControl('blur');
+			hideControl('theta1');
+			hideControl('theta2');
+			hideControl('stacked');
+			hideControl('angleDisplay');
+			break;
+	}
+
+}
+
+const updateFractalUniforms = () => {
+
+	fractalUniforms[2].value = time;
+	fractalUniforms[0].value[0] = lerp(fractalUniforms[0].value[0], desiredFractalPosition[0], fractalSmoothing);
+	fractalUniforms[0].value[1] = lerp(fractalUniforms[0].value[1], desiredFractalPosition[1], fractalSmoothing);
+	fractalUniforms[1].value = lerp(fractalUniforms[1].value, desiredFractalZoom, fractalSmoothing);
+
+	for(let i=0; i<fractalUniforms.length; i++) {
+		const u = fractalUniforms[i];
+		const uniformLocation = gl.getUniformLocation(program, 'u' + u.name);
+		switch(u.size) {
+			case 1:
+				gl.uniform1f(uniformLocation, u.value);
+				break;
+			case 2:
+				gl.uniform2f(uniformLocation, u.value[0], u.value[1]);
+				break;
+		}
+	}
+}
+
+const lerp = (a, b, t) => {
+	return a + (b - a) * t;
+}
+
+const handleKeyDown = (e) => {
+	keysHeld.push(e.key);
+}
+
+const handleKeyUp = (e) => {
+	keysHeld = keysHeld.filter(key => key !== e.key);
+}
+
+const handleFractalInput = (e) => {
+	const zoom = fractalUniforms[1].value;
+	const moveVector = [0, 0];
+	if(mode == 'fractal') {
+		if(keysHeld.includes('w'))
+			moveVector[1] += zoom*fractalMoveSpeed;
+		if(keysHeld.includes('a'))
+			moveVector[0] -= zoom*fractalMoveSpeed;
+		if(keysHeld.includes('s'))
+			moveVector[1] -= zoom*fractalMoveSpeed;
+		if(keysHeld.includes('d'))
+			moveVector[0] += zoom*fractalMoveSpeed;
+		if(keysHeld.includes('ArrowUp'))
+			desiredFractalZoom /= fractalZoomSpeed;
+		if(keysHeld.includes('ArrowDown'))
+			desiredFractalZoom *= fractalZoomSpeed;
+
+		const mag = Math.sqrt(moveVector[0]*moveVector[0] + moveVector[1]*moveVector[1]);
+		if(mag !== 0) {
+			desiredFractalPosition[0] += fractalMoveSpeed * zoom * moveVector[0] / mag;
+			desiredFractalPosition[1] += fractalMoveSpeed * zoom * moveVector[1] / mag;
+		}
+		updateFractalUniforms();
+
+	}
+}
+
 const initControls = () => {
 
 	for(const name of names) {
@@ -197,21 +275,16 @@ const initControls = () => {
 	angleDisplayControl.removeEventListener('input', updateInitialConditions);
 	angleDisplayControl.addEventListener('input', updateAngleDisplay);
 
-	const curvesControl = document.getElementById('curves');
-	curvesControl.removeEventListener('input', updateInitialConditions);
-	curvesControl.addEventListener('input', toggleCurves);
-
-	const fractalControl = document.getElementById('fractal');
-	fractalControl.removeEventListener('input', updateInitialConditions);
-	fractalControl.addEventListener('input', toggleFractal);
-
 	const stackedControl = document.getElementById('stacked');
 	stackedControl.removeEventListener('input', updateInitialConditions);
 	stackedControl.addEventListener('input', toggleStacked);
 
-	const dpsControl = document.getElementById('dps');
-	dpsControl.removeEventListener('input', updateInitialConditions);
-	dpsControl.addEventListener('input', toggleDps);
+	const modeControl = document.getElementById('mode-select');
+	modeControl.addEventListener('input', handleModeChange);
+
+	window.addEventListener('keydown', (e) => handleKeyDown(e));
+	window.addEventListener('keyup', (e) => handleKeyUp(e));
+
 }
 initControls();
 
@@ -232,24 +305,37 @@ const init = () => {
 	}
 
 }
-document.addEventListener('DOMContentLoaded', updateInitialConditions);
 
 function update() {
 
-	clearCanvas(ctx);
 	for(const dp of dps) {
 		dp.update();
-		dp.display(ctx, state.angleDisplay);
 	}
 	time += timestep;
+	switch(mode) {
+		case 'dps':
+			clearCanvas(ctx);
+			for(const dp of dps) {
+				dp.display(ctx, state.angleDisplay);
+			}
+			break;
+		case 'curves':
+			updateCurves();
+			break;
+		case 'fractal':
+			gl.drawArrays(gl.TRIANGLES, 0, 6);
+			handleFractalInput();
+			break;
 
-	updateCurves();
+	}
+	updateFractalUniforms();
 
   requestAnimationFrame(update);
 }
-requestAnimationFrame(update);
 
-toggleCurves();
-toggleFractal();
 updateCurves();
-initFractalDisplay(fractalCanvas, gl);
+const program = await initFractalDisplay(fractalCanvas, gl);
+handleModeChange();
+updateFractalUniforms();
+updateInitialConditions();
+update();
