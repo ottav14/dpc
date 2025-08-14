@@ -1,9 +1,8 @@
-import * as PARAMS from './params.js';
 import * as UTIL from './util.js';
 
 class Pendulum {
 
-	constructor(x, y, t, m, l, w, r, first) {
+	constructor(x, y, t, m, l, w, r) {
 		this.x = x;
 		this.y = y;
 		this.t = t;
@@ -13,17 +12,17 @@ class Pendulum {
 		this.w = w;
 		this.l = l;
 		this.r = r;
-		this.color = 10*PARAMS.currentDPCount % 255;
-		this.first = first;
-		PARAMS.setDPCount(PARAMS.currentDPCount+1);
 	}
 
-	display(ctx, angleDisplay) {
+	display(ctx, color) {
 		ctx.save();
 
 		ctx.translate(this.x, this.y);
 
+		const angleDisplay = document.getElementById('angleDisplay').checked;
+
 		// Angle display
+
 		if(angleDisplay) {
 			ctx.beginPath();
 			ctx.arc(0, 0, 0.5*this.l, 0.5*Math.PI, this.t+0.5*Math.PI, this.t < 0);
@@ -38,7 +37,7 @@ class Pendulum {
 		ctx.rotate(this.t);
 		ctx.beginPath();
 		ctx.arc(0, 0, 0.5*this.w, 0, Math.PI * 2); 
-		const [r, g, b] = UTIL.hue(this.color);
+		const [r, g, b] = UTIL.hue(color);
 		ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 1.0)`;
 		ctx.fill();
 

@@ -1,7 +1,0 @@
-class FractalRenderer {
-
-	constructor() {
-		
-	}
-
-}

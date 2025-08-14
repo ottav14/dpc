@@ -1,5 +1,3 @@
-import * as PARAMS from './params.js';
-
 export const mod = (n, m) => ((n % m) + m) % m;
 
 export const hue = (h, s = 1, l = 0.5) => {
@@ -28,5 +26,9 @@ export const hue = (h, s = 1, l = 0.5) => {
 
 export function triangleWave(t) {
   return 1 - 2 * Math.abs((t % 1) - 0.5);
+}
+
+export const lerp = (a, b, t) => {
+	return a + (b - a) * t;
 }
 
